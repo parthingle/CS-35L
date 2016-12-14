@@ -1,0 +1,78 @@
+Lab 9:
+
+1. First we setup the lab environment to verify if the required repositories are present on the machine:
+
+in Ubunbtu:
+
+$ dpkg --get-selections | grep openssh
+
+openssh-client			install
+
+
+The openssh server and client are missing. We download and install them:
+
+$ sudo apt-get update
+$ sudo apt-get install openssh-server
+$ sudo apt-get install openssh-client
+
+
+When I'm the server:
+
+
+First, we generate the public and private keys:
+
+$ ssh-keygen
+
+It asks me to name the file that'll store the passwords, and then asks me to enter the password twice for confirmation. For now, I've kept the password as empty strings.
+
+Then, we create an account for the lab partner. For simplicity, I set the password as "passzhang" for him:
+
+$ sudo useradd -d /home/zhang -m zhang
+$ sudo passwd zhang
+
+> passzhang
+
+
+Then, we create the .ssh directory for the lab partner:
+
+$ mkdir /home/zhang
+$ cd /home/zhang
+$ sudo mkdir .ssh
+
+Then, we change the ownership and permission on the .ssh directory so the lab partner can access it remotely:
+
+$ sudo chown -R zhang .ssh
+$ sudo chmod 700 .ssh
+
+
+Now the server work is done. I entered ifconfig to get my IP address which I shared with my lab partner, who then followed the cient side instructions that I followed (When he used his own credentials to 'log into' my server). 
+
+
+When I acted as the client
+
+Just like the server, we first generate the public and private keys:
+
+$ssh-keygen
+
+Again, for simplicity, I stored it in a file called ssh_pass, and set empty strings as the password.
+
+Then, we copy the public key to the server for key-based authentication
+
+$ ssh-copy-id -i ingle@<partner_IP> (10.97.85.167)
+
+Then we add the private key to authentication agent:
+
+$ ssh-add
+
+After that, we SSH to the lab partner's server by enabling :
+X11 forwarding 
+
+$ ssh -X ingle@<partner IP> 
+
+Finally, to test if the connection worked, I try to run firefox on the server:
+
+$ firefox
+
+It works!!
+
+To confirm, I enter ifconfig on my (the client) machine, and get the IP address of my partner (the server).

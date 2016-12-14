@@ -1,0 +1,50 @@
+1. Check which version we're using:
+
+$ sort --version
+
+sort (GNU coreutils) 8.4
+
+To use the latest version, we download it from the Coreutils website, extract it ,and make it:
+
+$ wget http://ftp.gnu.org/gnu/coreutils/coreutils-8.25.tar.xz
+$ tar -xf coreutils-8.25.tar.xz
+$ cd coreutils-8.25
+$ make configure
+$ make
+$ make install
+
+$ sort --version
+
+sort(GNU coreutils) 8.25
+
+2. Next, we use the od command to generate a file with 10M randomly generated doubles with the file size being 80M bytes = 80 MB
+
+
+$ od -An -t f -N 80000000 < /dev/urandom | tr -s ' ' '\n' > random.txt
+
+[ingle@lnxsrv05 ~/Assignment7]$ time -p sort -g random.txt > /dev/null
+
+real 187.28
+user 187.14
+sys 0.24
+
+
+$ time -p sort -g --parallel=1 random.txt >/dev/null
+
+real 177.16
+user 174.22
+sys 0.31
+
+$ time -p sort -g --parallel=4 random.txt >/dev/null
+real 56.70
+user 191.98
+sys 0.39
+
+
+$ time -p sort -g --parallel=8 random.txt >/dev/null
+real 36.14
+user 198.75
+sys 0.47
+
+
+As the number of threads increase, the speed increases and time of execution decreases.

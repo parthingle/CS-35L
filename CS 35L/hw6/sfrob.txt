@@ -1,0 +1,79 @@
+HW 6
+
+1. Once we've written sfrob using system calls (now sfrobu), we compile it, and then we test it by inputting the bigfile we created for the Lab assignment using the time command:
+
+$ gcc -std=c99 -o sfrobu sfrobu.c
+$ time ./sfrobu <bigfile.txt
+
+Output:
+
+Comparisons: 1730054
+
+real    0m9.234s
+user    0m0.638s
+sys     0m8.000s
+
+And we compare this output with with the assignment from last week, sfrob:
+
+$ gcc -std=c99 -o sfrob sfrob.c
+$ time ./sfrob <bigfile.txt
+
+real    0m2.159s
+user    0m0.209s
+sys     0m0.262s
+
+
+As we can see, sfrobu performs significantly slower than sfrob because it uses syscalls, which are expensive. 
+
+Now, bigfile.txt is 200,000 lines long. We'll have to create bigfile2, bigfile3 bigfile4 and bigfile that are 100,000, 50,000, 10,000 and 400,000 lines long.
+
+No of Lines                No of comparisons
+10,000                     64608
+50,000                     382512
+100,000	                   815024
+200,000                    1730054
+400,000                    3660096
+
+
+After running regression analysis using the aforementioned data points, we get this equation:
+
+Y = 9.271*X - 78539
+
+Where X is the number of lines inputted, and Y is the number of comparisons. The relation is linear.
+The correlation co-efficient is 0.9995
+
+
+
+2. Once the script for sfrobs is written, we can test its performance using the time function:
+
+$ time ./sfrobs <bigfile.txt >sfrobs_op.txt
+
+and the output is:
+
+real    0m0.269s
+user    0m0.011s
+sys     0m0.026s
+
+
+For reference:
+
+sfrobu:
+
+$ time ./sfrobu <bigfile.txt >sfrobu_op.txt
+
+Comparisons: 1730054
+
+real    0m9.104s
+user    0m0.677s
+sys     0m8.360s
+
+
+sfrob:
+
+$ time ./sfrob <bigfile.txt >sfrob_op.txt
+
+real    0m1.250s
+user    0m1.139s
+sys     0m0.009s
+
+As we can see, the shell script version outperforms the rest by a significant margin, as it is highly optimized.

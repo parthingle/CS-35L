@@ -1,0 +1,12 @@
+1. Even if the other teams were able to observe the bytes flowing between our teo machines, the data would still remain secure. This is because the bytes they'll be seeing will be 'encrypted'. As in, the bytes the client sends will be translated into the public key which, without its respective private key, would mean nothing.
+
+If the observers had access to the literal keystrokes that we made on our machine (possibly through some keylogging malware), they will be able to see all the textual data we're sending between ourselves. Keylogging can, however, give them access to the client's password, which will allow them to access the server through the front door.
+
+If the other teams get their hands on the boot USB itself, they have the private key as well. Using that, they can translate every byte of information that would have otherwise been meaningless. 
+
+2. The command gpg --verify works by comparing the signature to the decrypted data using a public key. If the daata was intercepted somewhere between the original source and the destination, that person could just re-encrypt the decrypted data using their own key, leave their own signature, and pas along the file to the final destination. 
+
+It'll be impossible for gpg --verify to check if there was another source for the file before the immediate supplier. 
+
+One way to fix this problem is to have a third-party certifying agency that keeps track of the origin of the files, and if the signature on the file you have doesn't match that on the certificate, you can tell that the file had been tampered with.
+

@@ -1,0 +1,37 @@
+1. When the goto statement is deleted, the line: 
+
+case_long_iso_tome_style:
+
+will not be called anymore. However, it is not necessary to remove it.
+
+
+2. In addition to th desired changes that the patch makes, it also replaces the time by the year for files that are at least a year old. Furthermore,it will be difficult for non-English speakers to understand.
+
+3. When we run randline.py on an empty file, the following message was generated:
+
+============================================================================
+File "randline.py", line 70, in <module>
+    main()
+  File "randline.py", line 64, in main
+    sys.stdout.write(generator.chooseline())
+  File "randline.py", line 34, in chooseline
+    return random.choice(self.lines)
+  File "/usr/local/cs/Python-2.7.10/lib/python2.7/random.py", line 275, in
+   choice
+    return seq[int(self.random() * len(seq))]  # raises IndexError if seq 
+    is empty
+IndexError: list index out of range
+=============================================================================
+
+In addition, there are several other messages are thrown becaue there is 0 line to be accessed by the class randline. Specifically, error message "IndexError: list index out of range" is thrown because seq is empty.
+
+4. When we invoke randline.py with python3, I get the following:
+
+==============================================================================
+File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+==============================================================================
+
+The syntaxError is thrown in Python3 because in Python2, exceptions are iterable and you can iterate over the parameters given to the exception by iterating over the exception itself.

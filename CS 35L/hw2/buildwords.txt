@@ -1,0 +1,63 @@
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+
+mv hwnwdseng.htm hwords
+
+grep "<td>" <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+sed 's/<[^>]*>//g' <hwords >hwords2
+
+tr -s "[:blank:]" <hwords2 >hwords3
+
+rm hwords
+
+rm hwords2
+
+mv hwords3 hwords
+
+sed 's/^[:blank:]//g' <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+tr '[:upper:]' '[:lower:]'<hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+sed 's/`/'"'"'/g' <hwords >hwords 2
+
+rm hwords
+
+mv hwords2 hwords
+
+sed 's/([^)]*)//g' <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+sed 's/\r/\n/g' <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+tr -s "\n" <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+sed /[^p^k^m^n^w^l^h^a^e^i^o^u^'\'']/d' <hwords >hwords2
+
+rm hwords
+
+mv hwords2 hwords
+
+sort -u

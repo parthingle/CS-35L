@@ -1,0 +1,62 @@
+1. To get man to print all commands with a certain word or phrase in its man page, 
+we need to type in man -f "<phrase to search for>" for ex:
+
+man -f 'sort"
+
+
+2. cp and wc are located at /usr/bin/cp and /usr/bin/wc respectively
+
+
+3.
+
+
+4. The file executed is emacs  
+
+ 
+5. chmod changes the permission to access a certain file
+The modifiers g+s sets the group ID on the current directory
+The modifiers o-x applied to chmod on a file will remove the authorization of non-owners to execcute the file
+
+
+6. $ find ../ingle -type f -mtime -21
+
+
+7. ls -lt ../ingle
+
+
+8.ls -la
+
+
+9.find -type f -printf '%T+ %p\n' | sort | head -n 1
+
+
+10. Local gets its data from the environment variables
+
+
+11. To look for all commands with "sort" in their name, we must type in C-h a in emacs, and search for "sort"
+
+
+12.
+C-M-a: Move to the beginning of a function
+
+C-M-b: Move to the beginning of the s-expression
+
+C-M-c: Exit out of a recursive edit
+
+C-M-d: Takes the cursor to the end of the 
+paragraph or comment or header it is currently in. ie the next s-expression
+
+C-M-e: It is used to move the cursor to the end of the function it is currently on
+
+C-M-f: It is used to get to the end of the current s-expression or the current expression in E-Lisp
+
+C-M-g: Works similar to C-g (explained below)
+
+C-M-h: It is used to mark of highlight the function the cursor currently is on
+
+
+13. C-g is used to get rid of a partially typed command. It can also be used to abort or cancel a command that is already executed, but isn't complete yet. It is a way to prevent errors before they can occur. C-g can also get you out of search queries, if you decide to do nothing with the searched phrase.
+
+14. The yank function is the same as the paste function used in windows/mac text editors like notepad or MS Word.
+
+15. Compared to ls -l, there are four extra files listed in dired. Also, dired shows all the available memory blocks. ls -l doesn't

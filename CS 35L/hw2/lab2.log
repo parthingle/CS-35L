@@ -1,0 +1,23 @@
+Lab 2 Log
+
+1. Download the given webpage using wget, and paste the contents into a file called hwords
+
+2. The assignment requires us to strip the webpage of unnecessary items like the brief introduction at the begininning, and a small paragraph at the end. 
+
+3. Once those paragraphs are deleted, we must clean up the blankspaces that will get formed at the top. 
+
+4. Then, we must systematically strip the webpage of things like html tags, unnecessary words within parentheses and other comments that are not required.
+
+5. The next step is to convert all uppercase letters to lowercase, as that is required by the spec.
+
+6. In the Hawaii'an language, the accents are made with a special king of apostrophe. We have to replace them with the regular single quote character ( ' )
+
+7. To format the file after making the aforementioned omissions, a shell command to convert all successive NLC ( '\n' ) into a single NLC.
+
+8. The final substantive command that we have to execute is to remove any words that contain letters NOT found in the Hawaii'an language.
+
+
+
+Noted Error:
+
+	The word "woman" is an english word, but co-incidentally only contains letters found in the Hawaii'an alphbet. This is why this word slips through the filters and can still be found in the final hwords file

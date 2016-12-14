@@ -1,0 +1,144 @@
+1. Download the file using:
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+
+
+2. unzip the .gz file using:
+tar -xf coreutils-7.6.tar.gz
+
+
+3. Make and install coreutils7.6
+
+$ ./configure 
+
+$make
+
+$make install
+
+
+4. To see the bug on the Seasnet machine, we get into /src directory, and list all the files to see the date format:
+
+cd src
+ls -l
+
+
+5. Then, we go back to the main directory, create an empty patch file and paste the contents of Brady's patch into that file:
+
+$ cd ..
+$ vi pf
+
+
+6. Then, we apply patch file:
+
+$ patch -p1 <pf
+
+$ make
+
+The output generated is:
+
+
+==========================================================================
+
+
+make  all-recursive
+make[1]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6'
+Making all in lib
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+make  all-recursive
+make[3]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+make[4]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+make[4]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+make[3]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/lib'
+Making all in src
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/src'
+make  all-am
+make[3]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/src'
+  CC     ls.o
+  CCLD   dir
+  CCLD   vdir
+  CCLD   ls
+make[3]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/src'
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/src'
+Making all in doc
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/doc'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/doc'
+Making all in man
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/man'
+  GEN    dir.1
+  GEN    vdir.1
+  GEN    ls.1
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/man'
+Making all in po
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/po'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/po'
+Making all in tests
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/tests'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/tests'
+Making all in gnulib-tests
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make  all-recursive
+make[3]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make[4]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make[4]: Nothing to be done for 'all-am'.
+make[4]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make[3]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6/gnulib-tests'
+make[2]: Entering directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6'
+make[2]: Nothing to be done for 'all-am'.
+make[2]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6'
+make[1]: Leaving directory '/w/home.06/cs/ugrad/chens/CS35L/assign3/lab1/
+coreutils-7.6'
+
+==========================================================================
+
+7. To check if th changes are applied, we go to the directory coretils-7.6/src and enter this command:
+$./ls -l
+
+Now, the format of the date is accurate.
+
+
+8. Then, we have to create two files in the /src directory:
+
+touch nf
+touch -t 201401010101 test
+
+Then, we list all the files again using the ls -l command, and the oputput generated is:
+
+
+==========================================================================
+-rw-r--r-- 1 ingle maugrad  23080 Oct 14 23:59 mkfifo.o
+-rwxr-xr-x 1 ingle maugrad 113592 Oct 14 23:59 mknod
+==========================================================================
+
+Now the date format is corrected.

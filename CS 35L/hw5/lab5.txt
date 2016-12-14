@@ -1,0 +1,113 @@
+1. First, we download the zipped file usign wget, and extract it into a directory ~/Assignment5:
+
+$ wget http://web.cs.ucla.edu/classes/fall16/cs35L/assign/coreutils-with-bug.tar.gz
+$ tar -xvf coreutils-with-bug.tar.gz
+
+   
+Then, I configure and make the program. But making results in an error -as we expected it to.
+
+The error reads 
+"
+error: conflicting typed for 'futimens'
+/usr/include/sys/stat.h:374: note: previous declaration of 'futimens' was here
+
+"
+The problem lies in the "futimens" function in the utimecmp.c and utimecmp.h files. 
+
+
+2. To fix this error, we donwload the given patch, and patch coreutils-with-bug
+
+$ wget http://web.cs.ucla.edu/classes/fall16/cs35L/assign/coreutils.diff
+$ patch -p0 < coreutils.diff
+
+These are the files that get patched:
+
+patching file lib/utimens.c
+patching file lib/utimens.h
+patching file src/copy.c
+patching file src/tee.c
+patching file src/touch.c
+
+
+I configure and make again after patching:
+
+$ ./configure
+$ make
+
+This time there are no errors returned. There are no errors this time because the patch renamed tee to coreutils_tee and futimens to coreutils_futimens --files whcih actually exist in the source folder.
+
+
+3. To recreate the bug, we touch the three files: 'now', 'now1', and 'wwi-armistice' by entering the following commands:
+
+$ tmp=$(mktemp -d)
+$ cd $tmp
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ sleep 1
+$ touch now1
+$ cd ~/Assignment5/coreutils-with-bug/src/
+$ ./ls -lt --full-time /tmp/tmp.PbzD4fT3NY/wwi-armistice /tmp/tmp.PbzD4fT3NY/now1 /tmp/tmp.PbzD4fT3NY/now
+
+This outputs:
+
+
+-rw-r--r-- 1 ingle maugrad 0 1918-11-11 03:00:00.000000000 -0800 /tmp/tmp.PbzD4fT3NY/wwi-armistice
+-rw-r--r-- 1 ingle maugrad 0 2016-10-30 13:22:07.012659794 -0700 /tmp/tmp.PbzD4fT3NY/now1
+-rw-r--r-- 1 ingle maugrad 0 2016-10-30 13:21:56.363376311 -0700 /tmp/tmp.PbzD4fT3NY/now
+
+
+4.To figure out what goes wrong, we use the gdb debugger.
+
+
+We first open coreutils-with-bug/src/ls.c in emacs to examine it. There, we find the function compare_mtime, which returns the function cmp_mtime(), which compares the time stamp on the files. So the problem must be there.
+
+So I open gdb and set a breakpoint there.
+
+$ gdb ./ls
+(gdb) run ./src/ls -lt /tmp/ingle /tmp/now1 /tmp/now2
+(gdb) break cmp_mtime 
+
+5. We walk instruction by instruction to figure out where the problem lies
+
+(gdb) stepi
+
+
+After taking the first step, we find that this function calls the function timespec_cmp(...) from the file ../lib/timespec.h:line 46
+
+
+timespec_cmp (struct timespec a, struct timespec b) 
+{ 
+   int diff = a.tv_sec - b.tv_sec; //change int to long long int
+   return diff ? diff : a.tv_nsec - b.tv_nsec; //change this to a well formed if-else block and return the correct answer
+} 
+
+The return statement leaves out a possibility of integer underflow, which is what is happening here. To fix this problem, at least to a certain limit, we can change the data type of diff into long long int, which needs a much larger value to overflow, and cast this type to a a.tv_nsec and b.tv_nsec as well. 
+Additionally, we need to fix the return statement into well structured conditional returns, instead of the ? : format, that will check whether diff is greater, smaller than or equal to zero and return corresponding values.
+
+Make a copy of timespec.h into the upper folders, and modify it in emacs, and rename the file as timespec2.h
+
+
+The new definition must look like:
+
+timespec_cmp(struct timespec a, struct timespec b)
+{
+   long long int diff = (long long int)a.tv_sec-(long long int)b.tv_sec;
+   if (!diff)
+   {
+      return 0;
+   }
+   else if (diff<0)
+   {
+      return -1;
+   }
+   else
+   {
+      return 1;
+   }
+}
+Then we take the original from the ../../lib directory and copy it to the outer folder, so coreutils is not affected
+then we save the file changes into a diff called lab5.diff
+
+$ diff -u timespec-orig.h timespec2.h >lab5.diff
+
+6. When we apply the patch, and run the commands on step 3 (after configuring and making) again, we get the correct answer.

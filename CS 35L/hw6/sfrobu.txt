@@ -1,0 +1,21 @@
+HW 6
+
+1. Once we've written sfrob using system calls (now sfrobu), we compile it, and then we test it by inputting the bigfile we created for the Lab assignment using the time command:
+
+$ gcc -std=c99 -o sfrobu sfrobu.c
+$ time ./sfrobu <bigfile.txt
+
+Output:
+
+real    0m6.987s
+user    0m0.347s
+sys     0m6.474s
+
+And we compare this output with with the assignment from last week, sfrob:
+
+$ gcc -std=c99 -o sfrob sfrob.c
+$ time ./sfrob <bigfile.txt
+
+real    0m2.159s
+user    0m0.209s
+sys     0m0.262s

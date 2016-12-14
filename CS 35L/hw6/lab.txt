@@ -1,0 +1,157 @@
+1. Write tr2b.c and tr2u.c which use getchar/putchar and read/write respectively.
+
+The structure of these programs is essentially the same: First check if the inputted string characters are of approprite lengths, and are in fact character strings. 
+
+Then, we read individual characters using the appropriate method as described in the assignment, compare the characters, and 'write' the appropriate output.
+
+2. Compile the two files using gcc:
+
+$ gcc -std=c99 -o tr2b tr2b.c
+$ gcc -std=c99 -o tr2u tr2u.c
+
+2. Then, we create a file that is atleast 5,000,000 bytes long. I wrote a simple program to do so:
+
+=============================================================================
+int main()
+{
+	char str[26] = "abcdefghijklmnopqrstuvwxyz";
+
+	for (int i=0; i < 200000; i++)
+	{
+	puts(str);
+	}
+}
+=============================================================================
+
+Then, I compile it and write its output into a text file:
+
+$ gcc -std=c99 -o bigfile bigfile.c
+$ ./bigfile >bigfile.txt
+
+
+Now we are ready to run strace.
+
+
+3. 
+(a) First, we strace the output into a file (output_tr2b nd output_tr2b respectively)
+
+strace on tr2b.c
+
+$ strace -c ./tr2b 'a' 'b' <bigfile.txt > op_tr2b.txt
+and we get:
+
+[ingle@lnxsrv07 ~/Assignment6]$ strace -c ./tr2b 'a' 'b' <bigfile.txt >op_tr2b.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 41.07    0.000207           2        83           write
+ 27.18    0.000137           2        85           read
+ 10.91    0.000055           6         9           mmap
+  5.75    0.000029           7         4           mprotect
+  3.97    0.000020           5         4           fstat
+  2.98    0.000015           8         2           open
+  2.18    0.000011          11         1           munmap
+  1.59    0.000008           8         1           execve
+  1.39    0.000007           4         2           close
+  1.39    0.000007           7         1         1 access
+  0.79    0.000004           4         1           brk
+  0.79    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000504                   194         1 total
+
+
+
+
+strace on tr2u.c
+
+$ strace -c ./tr2u 'a' 'b' < bigfile.txt > output_tr2u
+and we get:
+
+[ingle@lnxsrv07 ~/Assignment6]$ strace -c ./tr2u 'a' 'b' <bigfile.txt >op_tr2u.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.51    6.358281           1   5400027           write
+ 44.49    5.096766           1   5400029           read
+  0.00    0.000037           5         7           mmap
+  0.00    0.000026           7         4           mprotect
+  0.00    0.000014           7         2           open
+  0.00    0.000010          10         1           munmap
+  0.00    0.000008           4         2           fstat
+  0.00    0.000007           4         2           close
+  0.00    0.000006           6         1         1 access
+  0.00    0.000006           6         1           execve
+  0.00    0.000004           4         1           brk
+  0.00    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   11.455169              10800078         1 total
+
+
+(b) When we output into the terminal:
+
+
+strace on tr2b.c
+
+$ strace -c ./tr2b 'a' 'b'  <bigfile.txt
+and we get:
+
+[ingle@lnxsrv07 ~/Assignment6]$ strace -c ./tr2b 'a' 'b' <bigfile.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 91.97    0.003218           1      5274           write
+  3.54    0.000124           1        85           read
+  1.51    0.000053           6         9           mmap
+  0.83    0.000029           7         4           mprotect
+  0.54    0.000019           5         4           fstat
+  0.43    0.000015           8         2           open
+  0.31    0.000011          11         1           munmap
+  0.23    0.000008           4         2           close
+  0.20    0.000007           7         1         1 access
+  0.20    0.000007           7         1           execve
+  0.11    0.000004           4         1           brk
+  0.11    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.003499                  5385         1 total
+
+
+strace on tr2u.c
+
+
+$ strace -c ./tr2u 'a' 'b'  <bigfile.txt
+and we get:
+
+[ingle@lnxsrv07 ~/Assignment6]$ strace -c ./tr2u 'a' 'b' <bigfile.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.14    6.429477           1   5400027           write
+ 44.86    5.230929           1   5400029           read
+  0.00    0.000044           6         7           mmap
+  0.00    0.000028           7         4           mprotect
+  0.00    0.000017           9         2           open
+  0.00    0.000010          10         1           munmap
+  0.00    0.000008           4         2           close
+  0.00    0.000007           4         2           fstat
+  0.00    0.000007           7         1         1 access
+  0.00    0.000005           5         1           execve
+  0.00    0.000004           4         1           brk
+  0.00    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   11.660540              10800078         1 total
+
+
+We can see that in both cases tr2b has significantly fewer system calls (194 to 10800078 in (a), 5385 to 10800078 in (b)). This creates a significant difference in the time it takes to run the two programs.
+
+
+4. We use the time function to compare how much faster one program is from the other:
+
+>> With tr2b.c 
+[ingle@lnxsrv07 ~/Assignment6]$ time ./tr2b 'a' 'b' < bigfile.txt >tr2b_time.txt
+real    0m0.254s
+user    0m0.156s
+sys     0m0.004s
+
+>> With tr2u.c
+[ingle@lnxsrv07 ~/Assignment6]$ time ./tr2u 'a' 'b' < bigfile.txt >tr2u_time.txt
+real    0m7.363s
+user    0m0.333s
+sys     0m6.930s
+
+We can see above two programs differ significantly. This happens because for tr2u, it spends most of the time doing syscall for every byte. For tr2b, it uses buffered I/O and therefore reduces syscall immensely.
